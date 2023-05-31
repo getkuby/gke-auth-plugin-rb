@@ -51,14 +51,17 @@ task :build do
   end
 end
 
-# task :publish do
-#   require 'kubectl-rb/version'
+task :publish do
+  require 'kubectl-rb/version'
+  require 'rotp'
 
-#   Dir.glob(File.join('pkg', "kubectl-rb-#{KubectlRb::VERSION}-*.gem")).each do |pkg|
-#     puts "Publishing #{pkg}"
-#     system("gem push -k rubygems #{pkg}")
-#   end
-# end
+  totp = ROTP::TOTP.new(ENV.fetch('TOTP_SECRET'), issuer: 'rubygems.org')
+
+  Dir.glob(File.join('pkg', "kubectl-rb-#{KubectlRb::VERSION}-*.gem")).each do |pkg|
+    puts "Publishing #{pkg}"
+    system("gem push --otp #{totp.now} -k rubygems #{pkg}")
+  end
+end
 
 task default: :spec
 
