@@ -52,12 +52,12 @@ task :build do
 end
 
 task :publish do
-  require 'kubectl-rb/version'
+  require 'gke-auth-plugin-rb/version'
   require 'rotp'
 
   totp = ROTP::TOTP.new(ENV.fetch('TOTP_SECRET'), issuer: 'rubygems.org')
 
-  Dir.glob(File.join('pkg', "kubectl-rb-#{KubectlRb::VERSION}-*.gem")).each do |pkg|
+  Dir.glob(File.join('pkg', "gke-auth-plugin-rb-#{GKEAuthPluginRb::VERSION}-*.gem")).each do |pkg|
     puts "Publishing #{pkg}"
     system("gem push --otp #{totp.now} -k rubygems #{pkg}")
   end
